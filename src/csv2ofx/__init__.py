@@ -70,7 +70,7 @@ class csv2ofx(wx.App):
         if self.mappings.IsEmpty():
             print "Using Default Mappings"
             import mappings
-            for mapping in mappings.all_mappings:
+	    for mapping in sorted(mappings.all_mappings):
                 self.mappings.Append ( mapping, mappings.all_mappings[mapping] )
         self.mappings.SetSelection(0)
 

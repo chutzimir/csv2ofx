@@ -94,6 +94,9 @@ def yodlee_memo(row,grid):
         return "%s - %s - %s" % ( memo, cat, cls)
     return "%s - %s" % ( cat, cls )
 
+def toOFXDateJP(date):
+    return datetime.strptime(date, '%Y/%m/%d').strftime('%Y%m%d')
+
 def toOFXDate(date):
     yearlen=len(date.split('/')[-1])
     return datetime.strptime(date,yearlen==2 and '%m/%d/%y' or '%m/%d/%Y').strftime('%Y%m%d')
@@ -253,4 +256,38 @@ msmoneyrep = {
     }
 }
 
-all_mappings = {'Yodlee':yodlee, 'Credit Union':cu, 'UBS':ubs, 'MS Money Report (CSV)':msmoneyrep }
+smbc = {
+
+    'OFX':{
+        'skip':     lambda row,grid: False,
+        'BANKID':   lambda row,grid: 'AAA',
+        'ACCTID':   lambda row,grid: 'BBB',
+        'DTPOSTED': lambda row,grid: toOFXDateJP(fromCSVCol(row,grid,'Date')),
+        'TRNAMT':   lambda row,grid: fromCSVCol(row,grid,'Amount'),
+        'FITID':    lambda row,grid: row,
+        'PAYEE':    lambda row,grid: fromCSVCol(row,grid,'Payee'),
+        'MEMO':     lambda row,grid: '',
+        'CURDEF':   lambda row,grid: 'JPY',
+        'CHECKNUM': lambda row,grid: 'CHECKNUM',
+    },
+    'QIF':{
+        #'split':       lambda row,grid: fromCSVCol(row,grid,'Split Type') == 'Split',
+        #'Account':     lambda row,grid: fromCSVCol(row,grid,'Account Name'),
+        #'AccountDscr': lambda row,grid: ' '.join(fromCSVCol(row,grid,'Account Name').split('-')[1:]),
+        'Date':        lambda row,grid: fromCSVCol(row,grid,'Date'),
+        'Payee':       lambda row,grid: fromCSVCol(row,grid,'Payee'),
+        #'Memo':        lambda row,grid: fromCSVCol(row,grid,'User Description') + ' ' + fromCSVCol(row,grid,'Memo'),
+        #'Category':    lambda row,grid: fromCSVCol(row,grid,'Category')+'-'+fromCSVCol(row,grid,'Classification'),
+        #'Class':       lambda row,grid: '',
+        'Amount':      lambda row,grid: fromCSVCol(row,grid,'Amount'),
+        #'Number':      lambda row,grid: fromCSVCol(row,grid,'Transaction Id')
+    }
+}
+
+all_mappings = {
+	'Yodlee':yodlee,
+	'Credit Union':cu,
+	'UBS':ubs,
+	'MS Money Report (CSV)':msmoneyrep,
+	'(01) SMBC':smbc,
+}
