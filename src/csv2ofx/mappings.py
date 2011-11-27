@@ -259,29 +259,17 @@ msmoneyrep = {
 smbc = {
 
     'OFX':{
-        'skip':     lambda row,grid: False,
+        'skip':     lambda row,grid: len(grid.GetValue(row,0)) == 0 or (grid.GetValue(row,0)[0] != '2'),
         'BANKID':   lambda row,grid: 'AAA',
         'ACCTID':   lambda row,grid: 'BBB',
-        'DTPOSTED': lambda row,grid: toOFXDateJP(fromCSVCol(row,grid,'Date')),
-        'TRNAMT':   lambda row,grid: fromCSVCol(row,grid,'Amount'),
+        'DTPOSTED': lambda row,grid: toOFXDateJP(grid.GetValue(row,0)),
+        'TRNAMT':   lambda row,grid: grid.GetValue(row,2),
         'FITID':    lambda row,grid: row,
-        'PAYEE':    lambda row,grid: fromCSVCol(row,grid,'Payee'),
+        'PAYEE':    lambda row,grid: grid.GetValue(row,1),
         'MEMO':     lambda row,grid: '',
         'CURDEF':   lambda row,grid: 'JPY',
         'CHECKNUM': lambda row,grid: 'CHECKNUM',
     },
-    'QIF':{
-        #'split':       lambda row,grid: fromCSVCol(row,grid,'Split Type') == 'Split',
-        #'Account':     lambda row,grid: fromCSVCol(row,grid,'Account Name'),
-        #'AccountDscr': lambda row,grid: ' '.join(fromCSVCol(row,grid,'Account Name').split('-')[1:]),
-        'Date':        lambda row,grid: fromCSVCol(row,grid,'Date'),
-        'Payee':       lambda row,grid: fromCSVCol(row,grid,'Payee'),
-        #'Memo':        lambda row,grid: fromCSVCol(row,grid,'User Description') + ' ' + fromCSVCol(row,grid,'Memo'),
-        #'Category':    lambda row,grid: fromCSVCol(row,grid,'Category')+'-'+fromCSVCol(row,grid,'Classification'),
-        #'Class':       lambda row,grid: '',
-        'Amount':      lambda row,grid: fromCSVCol(row,grid,'Amount'),
-        #'Number':      lambda row,grid: fromCSVCol(row,grid,'Transaction Id')
-    }
 }
 
 all_mappings = {
